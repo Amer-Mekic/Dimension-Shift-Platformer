@@ -1,13 +1,11 @@
 using UnityEngine;
 
-public class Star : MonoBehaviour
+// Same refactoring as in Coin script, extend our custom Collectible class
+public class Star : Collectible
 {
-    void OnTriggerEnter(Collider other)
+    protected override void Collect()
     {
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("Star Collected!");
-            Destroy(gameObject);
-        }
+        base.Collect();
+        Debug.Log("Star Collected!");
     }
 }

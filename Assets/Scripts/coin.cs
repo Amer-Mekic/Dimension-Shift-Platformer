@@ -1,26 +1,10 @@
 using UnityEngine;
 
-public class Coin : MonoBehaviour
+// Refactored Coin script to inherit from Collectible base class
+public class Coin : Collectible
 {
-    public AudioClip coinSound;
-    private AudioSource audioSource;
-    void Start() {
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null) {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
-    }
-    public void CollectCoin(){
-        Destroy(gameObject, 0.5f); // delay collecting 0.5s to play sound
-    }
-    private void OnTriggerEnter(Collider other)
+    protected override void Collect()
     {
-        if (other.CompareTag("Player"))
-        {
-            audioSource.PlayOneShot(coinSound); // Play sound
-            GetComponent<MeshRenderer>().enabled = false; // Hide coin
-            GetComponent<Collider>().enabled = false; // Disable collider
-            CollectCoin();
-        }
+        base.Collect(); // Call base class Collect()
     }
 }

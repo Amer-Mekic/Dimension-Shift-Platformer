@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1467730939640747006}
   - component: {fileID: 2737093838295928893}
   - component: {fileID: 3661563026183342085}
+  - component: {fileID: -6199112666726956684}
   m_Layer: 0
   m_Name: CoinPrefab
   m_TagString: Untagged
@@ -122,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb5aff7973a1bfd4babcbe4080d15c12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinSound: {fileID: 8300000, guid: 2e1c0edfc97324f3cbdc4ed5f343753b, type: 3}
+  collectSound: {fileID: 8300000, guid: 2e1c0edfc97324f3cbdc4ed5f343753b, type: 3}
 --- !u!82 &3661563026183342085
 AudioSource:
   m_ObjectHideFlags: 0
@@ -220,3 +221,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-6199112666726956684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 641561494712913975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04c2aa4f86ca6384e9a9c6d234cdef24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bounceSpeed: 8
+  bounceAmplitude: 0.05
+  rotationSpeed: 90
