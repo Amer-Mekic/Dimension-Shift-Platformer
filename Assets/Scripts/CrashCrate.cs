@@ -2,110 +2,88 @@
 
 public class Crate : MonoBehaviour
 {
+    public float fallHeightThreshold = 3f;
+    public float raycastDistance = 1f;
+    public float moveCooldown = 0.5f;
+    private float highestPoint;
+    private float lastMoveTime;
+    private bool isGrounded = false;
+    private bool isFalling = false;
+
     [Header("Crate Components")]
     public BoxCollider boxCollider;
     public MeshRenderer wholeCrate;
     public GameObject fracturedCrate;
     public AudioSource crashAudioClip;
 
-    [Header("Crate Settings")]
-    public float pushDistance = 1f; // Move 1x (1 block)
-    public float fallHeightThreshold = 3f; // Height required to break
-    private Vector3 lastPosition;
-    private bool isGrounded = false;
-    private bool isFalling = false;
-    private float highestPoint;
-
-    private Rigidbody rb;
-
-    private void Awake()
+    private void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        GroundCheck(); // Check if it's grounded initially
+        if (!isGrounded)
+        {
+            isFalling = true;
+            highestPoint = transform.position.y;
+        }
     }
 
-    void Start()
+    private void Update()
     {
-        lastPosition = transform.position;
-    }
+        GroundCheck();
 
-    void Update()
-    {
-        CheckIfFalling();
-        lastPosition = transform.position;
+        if (isFalling)
+        {
+            transform.position += Vector3.down * 9.81f * Time.deltaTime;
+
+            if (isGrounded)
+            {
+                float fallDistance = highestPoint - transform.position.y;
+                if (fallDistance >= fallHeightThreshold)
+                    BreakCrate();
+
+                isFalling = false;
+            }
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (Time.time - lastMoveTime < moveCooldown) return;
+
         if (collision.gameObject.CompareTag("Player"))
         {
             Vector3 direction = collision.contacts[0].point - transform.position;
             direction = direction.normalized;
 
-            // Push only if the player collides from the left or right
-            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.z))
             {
-                Push(direction.x);
+                float step = direction.x > 0 ? -1 : 1;
+                Vector3 targetPos = transform.position + new Vector3(step, 0, 0);
+                if (IsGroundBelow(targetPos)) // Optional: check if valid spot
+                {
+                    transform.position = targetPos;
+                    lastMoveTime = Time.time;
+                    GroundCheck(); // Refresh fall status
+                }
             }
         }
     }
 
-    private void Push(float directionX)
+    private void GroundCheck()
     {
-        if (rb == null) return; // Safety check
+        RaycastHit hit;
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, raycastDistance);
 
-        Vector3 force = new Vector3(Mathf.Sign(directionX) * pushDistance, 0, 0);
-        rb.AddForce(force, ForceMode.Impulse);
-
-        // Force rechecking if the crate is now falling
-        if (!Physics.Raycast(transform.position, Vector3.down, 0.6f))
+        if (!isGrounded && !isFalling)
         {
+            highestPoint = transform.position.y;
             isFalling = true;
-            rb.useGravity = true;
-            highestPoint = transform.position.y; // Set new highest point after push
         }
     }
 
-    private void CheckIfFalling()
-{
-    bool wasGrounded = isGrounded;
-    isGrounded = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 0.6f);
-
-    if (!isGrounded && !isFalling)
+    private bool IsGroundBelow(Vector3 pos)
     {
-        isFalling = true;
-        rb.useGravity = true;
-        highestPoint = transform.position.y; // Store height BEFORE falling
-        Debug.Log("Crate started falling! Highest Point: " + highestPoint);
+        return Physics.Raycast(pos, Vector3.down, raycastDistance);
     }
-
-    if (isFalling && isGrounded)
-    {
-        isFalling = false;
-
-        float fallDistance = highestPoint - transform.position.y; // Correct calculation
-        Debug.Log("Crate landed! Fall distance: " + fallDistance);
-
-        if (fallDistance >= fallHeightThreshold)
-        {
-            Debug.Log("Crate breaking, fall distance met threshold!");
-            BreakCrate();
-        }
-    }
-
-    // Apply horizontal drag only while falling
-    if (isFalling)
-    {
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x * 0.1f, rb.linearVelocity.y, rb.linearVelocity.z);
-    }
-
-    // Update highest point while crate is in the air
-    if (isFalling && transform.position.y > highestPoint)
-    {
-        highestPoint = transform.position.y; // Update only if crate moves higher
-    }
-}
-
-
 
     private void BreakCrate()
     {
@@ -113,12 +91,6 @@ public class Crate : MonoBehaviour
         boxCollider.enabled = false;
         fracturedCrate.SetActive(true);
         crashAudioClip.Play();
-        Destroy(gameObject, 2f); // Destroy after playing effect
-    }
-
-    [ContextMenu("Test Break")]
-    public void TestBreak()
-    {
-        BreakCrate();
+        Destroy(gameObject, 2f);
     }
 }
