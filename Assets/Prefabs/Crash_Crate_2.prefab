@@ -50,12 +50,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31ca72c67b8c0c47878da4f625e48d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fallHeightThreshold: 3
+  raycastDistance: 0.6
+  moveCooldown: 0.5
   boxCollider: {fileID: 1417637340330785042}
   wholeCrate: {fileID: 8972346622805641525}
   fracturedCrate: {fileID: 1801761146947824276}
   crashAudioClip: {fileID: 4262418605540733613}
-  pushDistance: 1
-  fallHeightThreshold: 3
 --- !u!65 &1417637340330785042
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -250,7 +251,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 120
   m_CollisionDetection: 1
