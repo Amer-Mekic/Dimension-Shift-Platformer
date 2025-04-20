@@ -2,30 +2,37 @@
 
 public class Crate : MonoBehaviour
 {
-    public float fallHeightThreshold = 3f;
-    public float moveCooldown = 0.3f;
-    public float raycastDistance = 0.55f; // Slightly more than half the box height
-    private float highestPoint;
+    [Header("Crate Settings")]
+    public float moveCooldown = 0.3f;               // Time before the crate can be moved again
+    public float raycastDistance = 0.55f;            // Distance for ground detection
+    public float fallHeightThreshold = 3f;           // Height at which the crate breaks when falling
+
     private float lastMoveTime;
+    private float highestPoint;
     private bool isGrounded = false;
     private bool isFalling = false;
-    private Vector3 boxSize;
+    private bool isBroken = false;  // Track if the crate is already broken
 
     [Header("Crate Components")]
-    public BoxCollider boxCollider;
-    public MeshRenderer wholeCrate;
-    public GameObject fracturedCrate;
-    public AudioSource crashAudioClip;
+    public BoxCollider boxCollider;                 // BoxCollider for the crate
+    public MeshRenderer wholeCrate;                 // Renderer for the crate
+    public GameObject fracturedCrate;               // Object for the fractured crate when it breaks
+    public AudioSource crashAudioClip;              // Audio clip for the crash sound
 
     private void Start()
     {
-        boxSize = boxCollider.size;
-        GroundCheck(true); // Force check on start
+        Debug.Log("[Start] Crate initialization");
+        GroundCheck(true);  // Force initial ground check
 
         if (!isGrounded)
         {
+            Debug.Log("[Start] Crate not grounded. Starting fall.");
             isFalling = true;
             highestPoint = transform.position.y;
+        }
+        else
+        {
+            Debug.Log("[Start] Crate is grounded.");
         }
     }
 
@@ -33,78 +40,157 @@ public class Crate : MonoBehaviour
     {
         GroundCheck();
 
-        if (isFalling)
+        // If the crate is falling, make it fall down
+        if (isFalling && !isBroken)
         {
             transform.position += Vector3.down * 9.81f * Time.deltaTime;
+            Debug.Log("[Update] Crate falling...");
 
+            // Ensure fall logic checks the ground on each frame
             if (isGrounded)
             {
                 float fallDistance = highestPoint - transform.position.y;
-                if (fallDistance >= fallHeightThreshold)
+                Debug.Log($"[Update] Crate landed. Fall distance: {fallDistance}");
+
+                if (fallDistance >= fallHeightThreshold && !isBroken)
                 {
+                    Debug.Log("[Update] Fall threshold exceeded. Breaking crate.");
                     BreakCrate();
                 }
+                else
+                {
+                    Debug.Log("[Update] Fall distance below threshold. Crate landed safely.");
+                }
+
                 isFalling = false;
             }
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void MoveCrate(Vector3 direction)
     {
-        if (Time.time - lastMoveTime < moveCooldown) return;
+        if (Time.time - lastMoveTime < moveCooldown || isBroken) return;
 
-        if (collision.gameObject.CompareTag("Player"))
+        Vector3 targetPos = transform.position + direction;
+        if (IsMoveValid(targetPos)) // Check if the move is valid (no collision, ground detected)
         {
-            Vector3 direction = collision.contacts[0].point - transform.position;
-            direction = direction.normalized;
-
-            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.z))
-            {
-                float step = direction.x > 0 ? -1 : 1;
-                Vector3 targetPos = transform.position + new Vector3(step, 0, 0);
-
-                if (IsMoveValid(targetPos))
-                {
-                    transform.position = targetPos;
-                    lastMoveTime = Time.time;
-                    GroundCheck(true); // Force update
-                }
-            }
+            transform.position = targetPos;
+            lastMoveTime = Time.time;
+            GroundCheck(true); // Force ground check after the move
+            Debug.Log($"[Crate] Moved to new position: {targetPos}");
+        }
+        else
+        {
+            Debug.Log("[Crate] Invalid move, cannot move to the target position.");
         }
     }
 
     private void GroundCheck(bool force = false)
     {
-        RaycastHit hit;
-        Vector3 origin = transform.position + Vector3.down * (boxSize.y / 2f - 0.01f); // Slight offset
-        isGrounded = Physics.BoxCast(origin, boxSize / 2f * 0.95f, Vector3.down, out hit, Quaternion.identity, raycastDistance);
+        Bounds bounds = boxCollider.bounds;
+        Vector3 origin = bounds.center;
+        Vector3 halfExtents = bounds.extents * 0.95f;
 
-        if (!isGrounded && !isFalling || force && !isGrounded)
+        RaycastHit hit;
+        bool previousGrounded = isGrounded;
+        isGrounded = Physics.BoxCast(origin, halfExtents, Vector3.down, out hit, Quaternion.identity, raycastDistance);
+
+        Debug.DrawRay(origin, Vector3.down * raycastDistance, isGrounded ? Color.green : Color.red);
+
+        if (!previousGrounded && isGrounded)
         {
+            Debug.Log("[GroundCheck] Crate has landed.");
+        }
+
+        if ((!isGrounded && !isFalling) || (force && !isGrounded))
+        {
+            Debug.Log("[GroundCheck] No ground detected. Starting fall.");
             highestPoint = transform.position.y;
             isFalling = true;
         }
     }
 
     private bool IsMoveValid(Vector3 targetPos)
+{
+    Bounds bounds = boxCollider.bounds;
+    Vector3 moveDirection = (targetPos - transform.position).normalized;
+    float moveDistance = Vector3.Distance(transform.position, targetPos);
+
+    // Obstacle raycast (box-shaped) in the movement direction
+    Vector3 origin = bounds.center;
+    Vector3 halfExtents = bounds.extents * 0.95f;
+    Quaternion orientation = Quaternion.identity;
+
+    bool obstacleHit = Physics.BoxCast(origin, halfExtents, moveDirection, out RaycastHit hit, orientation, moveDistance);
+    
+    if (obstacleHit)
     {
-        // Prevent moving into empty space
-        Vector3 origin = targetPos + Vector3.down * (boxSize.y / 2f - 0.01f);
-        return Physics.BoxCast(origin, boxSize / 2f * 0.95f, Vector3.down, out _, Quaternion.identity, raycastDistance);
+        Debug.Log($"[IsMoveValid] Obstacle detected: {hit.collider.gameObject.name}");
+        return false;
+    }
+
+    // Check for ground directly beneath the target position
+    Vector3 groundCheckOrigin = targetPos + Vector3.up * bounds.extents.y;
+    bool isGrounded = Physics.BoxCast(groundCheckOrigin, halfExtents, Vector3.down, out _, Quaternion.identity, raycastDistance);
+
+    bool isEdge = IsEdge(targetPos);
+
+    if (isGrounded || isEdge)
+    {
+        Debug.DrawRay(groundCheckOrigin, Vector3.down * raycastDistance, isGrounded ? Color.green : Color.yellow);
+        return true;
+    }
+    else
+    {
+        Debug.DrawRay(groundCheckOrigin, Vector3.down * raycastDistance, Color.red);
+        return false;
+    }
+}
+
+
+    private bool IsEdge(Vector3 targetPos)
+    {
+        // Check if the crate is near the edge by raycasting from the edges of the target position
+        Vector3 checkOrigin = targetPos + new Vector3(0, 0.1f, 0); // Slightly above the crate
+        RaycastHit hit;
+
+        // Perform a raycast directly downward from a point just above the crate
+        bool isEdge = !Physics.Raycast(checkOrigin, Vector3.down, out hit, raycastDistance);
+
+        // Debug ray for edge detection
+        Debug.DrawRay(checkOrigin, Vector3.down * raycastDistance, isEdge ? Color.yellow : Color.red);
+        Debug.Log($"[IsEdge] Is the crate at the edge? {isEdge}");
+
+        return isEdge;
     }
 
     private void BreakCrate()
     {
-        wholeCrate.enabled = false;
-        boxCollider.enabled = false;
-        fracturedCrate.SetActive(true);
-        crashAudioClip.Play();
-        Destroy(gameObject, 2f);
+        if (isBroken) return;  // Prevent further break triggers
+
+        Debug.Log("[BreakCrate] Crate breaking logic triggered.");
+        wholeCrate.enabled = false;  // Disable the intact crate
+        boxCollider.enabled = false;  // Disable the collider
+        fracturedCrate.SetActive(true);  // Show the fractured crate
+        crashAudioClip.Play();  // Play the crash sound
+        isBroken = true;  // Set the crate as broken to avoid repeating the process
+        Destroy(gameObject, 1f);  // Destroy the original crate after 2 seconds
     }
 
     [ContextMenu("Test Break")]
     public void TestBreak()
     {
         BreakCrate();
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (boxCollider == null) return;
+
+        Bounds bounds = boxCollider.bounds;
+        Vector3 origin = bounds.center;
+        Vector3 halfExtents = bounds.extents * 0.95f;
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireCube(origin + Vector3.down * raycastDistance, halfExtents * 2);
     }
 }
