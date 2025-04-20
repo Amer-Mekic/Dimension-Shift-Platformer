@@ -3,12 +3,13 @@
 public class Crate : MonoBehaviour
 {
     public float fallHeightThreshold = 3f;
-    public float raycastDistance = 1f;
-    public float moveCooldown = 0.5f;
+    public float moveCooldown = 0.3f;
+    public float raycastDistance = 0.55f; // Slightly more than half the box height
     private float highestPoint;
     private float lastMoveTime;
     private bool isGrounded = false;
     private bool isFalling = false;
+    private Vector3 boxSize;
 
     [Header("Crate Components")]
     public BoxCollider boxCollider;
@@ -18,7 +19,9 @@ public class Crate : MonoBehaviour
 
     private void Start()
     {
-        GroundCheck(); // Check if it's grounded initially
+        boxSize = boxCollider.size;
+        GroundCheck(true); // Force check on start
+
         if (!isGrounded)
         {
             isFalling = true;
@@ -38,8 +41,9 @@ public class Crate : MonoBehaviour
             {
                 float fallDistance = highestPoint - transform.position.y;
                 if (fallDistance >= fallHeightThreshold)
+                {
                     BreakCrate();
-
+                }
                 isFalling = false;
             }
         }
@@ -58,31 +62,35 @@ public class Crate : MonoBehaviour
             {
                 float step = direction.x > 0 ? -1 : 1;
                 Vector3 targetPos = transform.position + new Vector3(step, 0, 0);
-                if (IsGroundBelow(targetPos)) // Optional: check if valid spot
+
+                if (IsMoveValid(targetPos))
                 {
                     transform.position = targetPos;
                     lastMoveTime = Time.time;
-                    GroundCheck(); // Refresh fall status
+                    GroundCheck(true); // Force update
                 }
             }
         }
     }
 
-    private void GroundCheck()
+    private void GroundCheck(bool force = false)
     {
         RaycastHit hit;
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, raycastDistance);
+        Vector3 origin = transform.position + Vector3.down * (boxSize.y / 2f - 0.01f); // Slight offset
+        isGrounded = Physics.BoxCast(origin, boxSize / 2f * 0.95f, Vector3.down, out hit, Quaternion.identity, raycastDistance);
 
-        if (!isGrounded && !isFalling)
+        if (!isGrounded && !isFalling || force && !isGrounded)
         {
             highestPoint = transform.position.y;
             isFalling = true;
         }
     }
 
-    private bool IsGroundBelow(Vector3 pos)
+    private bool IsMoveValid(Vector3 targetPos)
     {
-        return Physics.Raycast(pos, Vector3.down, raycastDistance);
+        // Prevent moving into empty space
+        Vector3 origin = targetPos + Vector3.down * (boxSize.y / 2f - 0.01f);
+        return Physics.BoxCast(origin, boxSize / 2f * 0.95f, Vector3.down, out _, Quaternion.identity, raycastDistance);
     }
 
     private void BreakCrate()
@@ -92,5 +100,11 @@ public class Crate : MonoBehaviour
         fracturedCrate.SetActive(true);
         crashAudioClip.Play();
         Destroy(gameObject, 2f);
+    }
+
+    [ContextMenu("Test Break")]
+    public void TestBreak()
+    {
+        BreakCrate();
     }
 }
