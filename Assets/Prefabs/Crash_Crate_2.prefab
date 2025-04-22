@@ -52,8 +52,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.4796462, y: 1.0048699, z: 1}
-  m_Center: {x: -0.019567251, y: 0.5038097, z: 0}
+  m_Size: {x: 1, y: 0.5, z: 1}
+  m_Center: {x: 0, y: 0.26, z: 0}
 --- !u!114 &3936390865854693297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,7 +97,7 @@ Transform:
   m_GameObject: {fileID: 9065924571364506927}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.00083017, y: 0.27365, z: 0.00042427}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -118,7 +118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveCooldown: 0
-  raycastDistance: 0.55
+  raycastDistance: 0.49
   fallHeightThreshold: 2.99
   boxCollider: {fileID: 1417637340330785042}
   wholeCrate: {fileID: 8972346622805641525}
@@ -219,7 +219,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 0.90215206
+  MinDistance: 0.78842837
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
