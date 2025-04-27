@@ -795,6 +795,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 758557834}
     m_Modifications:
+    - target: {fileID: 251274181304124088, guid: 1fe125ad895ff8041ad12869045b85cd, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 939057629157208318, guid: 1fe125ad895ff8041ad12869045b85cd, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -970,7 +974,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: a7ae36306e6faff4892c7a902aacb5e9, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -1287,6 +1291,10 @@ PrefabInstance:
     - target: {fileID: 4414019212315716679, guid: 0a984d0d9bddcf744a8030c08060f7d7, type: 3}
       propertyPath: m_Name
       value: PauseButtonBackground
+      objectReference: {fileID: 0}
+    - target: {fileID: 4414019212315716679, guid: 0a984d0d9bddcf744a8030c08060f7d7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7682848980126166866, guid: 0a984d0d9bddcf744a8030c08060f7d7, type: 3}
       propertyPath: m_PresetInfoIsWorld
