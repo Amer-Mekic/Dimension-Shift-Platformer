@@ -1,8 +1,14 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Fonts.meta
 guid: c59429b55795146418ed6bb15b48db36
 folderAsset: yes
 DefaultImporter:
+========
+guid: f6a83d3a47789cd449d52eb050860a95
+NativeFormatImporter:
+>>>>>>>> origin/main:Assets/Materials/Red.mat.meta
   externalObjects: {}
+  mainObjectFileID: 2100000
   userData: 
   assetBundleName: 
   assetBundleVariant: 
