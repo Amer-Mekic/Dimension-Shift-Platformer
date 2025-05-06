@@ -1288,6 +1288,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 2798684946462754192, guid: 0a984d0d9bddcf744a8030c08060f7d7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 3eb9334422defff42b79c46e59b2f7d6, type: 3}
     - target: {fileID: 4414019212315716679, guid: 0a984d0d9bddcf744a8030c08060f7d7, type: 3}
       propertyPath: m_Name
       value: PauseButtonBackground
