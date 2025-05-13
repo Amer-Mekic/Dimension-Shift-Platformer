@@ -2,10 +2,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    // Camera Rotation
-    public float mouseSensitivity = 2f;
-    private float verticalRotation = 0f;
-    private Transform cameraTransform;
 
     // Ground Movement
     private Rigidbody rb;
@@ -15,8 +11,8 @@ public class Player : MonoBehaviour
 
     // Jumping
     public float jumpForce = 10f;
-    public float fallMultiplier = 2.5f; // Multiplies gravity when falling down
-    public float ascendMultiplier = 2f; // Multiplies gravity for ascending to peak of jump
+    public float fallMultiplier = 2.5f;
+    public float ascendMultiplier = 2f;
     private bool isGrounded = true;
     public LayerMask groundLayer;
     private float groundCheckTimer = 0f;
@@ -28,7 +24,6 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        cameraTransform = Camera.main.transform;
 
         playerHeight = GetComponent<CapsuleCollider>().height * transform.localScale.y;
         raycastDistance = (playerHeight / 2) + 0.3f;
@@ -40,9 +35,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         moveHorizontal = Input.GetAxisRaw("Horizontal");
-        moveForward = Input.GetAxisRaw("Vertical");
 
-        RotateCamera();
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
@@ -68,30 +61,23 @@ public class Player : MonoBehaviour
 
     void MovePlayer()
     {
-        Vector3 movement = (transform.right * moveHorizontal + transform.forward * moveForward).normalized;
+
+        Vector3 movement = transform.right * moveHorizontal;
         Vector3 targetVelocity = movement * MoveSpeed;
 
-        Vector3 velocity = rb.linearVelocity;
+        Vector3 velocity = rb.linearVelocity; // Using linearVelocity per new physics system
         velocity.x = targetVelocity.x;
-        velocity.z = targetVelocity.z;
+
+        // Prevent movement in forward/backward (Z) and don't affect vertical motion (Y)
+        velocity.z = 0; // lock forward/back movement
         rb.linearVelocity = velocity;
 
-        if (isGrounded && moveHorizontal == 0 && moveForward == 0)
+        if (isGrounded && moveHorizontal == 0)
         {
             rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
         }
     }
 
-    void RotateCamera()
-    {
-        float horizontalRotation = Input.GetAxis("Mouse X") * mouseSensitivity;
-        transform.Rotate(0, horizontalRotation, 0);
-
-        verticalRotation -= Input.GetAxis("Mouse Y") * mouseSensitivity;
-        verticalRotation = Mathf.Clamp(verticalRotation, -90f, 90f);
-
-        cameraTransform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
-    }
 
     void Jump()
     {
