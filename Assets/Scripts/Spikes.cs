@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Spikes : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class Spikes : MonoBehaviour
         {
             audioSource.PlayOneShot(deathSound);
             Destroy(other.gameObject, 0.5f); // Removes the player from the scene / game over
+            SceneManager.LoadScene("GameOver");
         }
     }
 }
