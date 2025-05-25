@@ -17,6 +17,8 @@ public class Player : MonoBehaviour
     private float playerHeight;
     private float raycastDistance;
 
+    public Animator animator;
+
     // Constant gravity
     public float extraGravity = 20f;
 
@@ -28,8 +30,8 @@ public class Player : MonoBehaviour
         playerHeight = GetComponent<CapsuleCollider>().height * transform.localScale.y;
         raycastDistance = (playerHeight / 2) + 0.3f;
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+       // Cursor.visible = false;
     }
 
     void Update()
@@ -62,22 +64,28 @@ public class Player : MonoBehaviour
 
         if (Input.GetKey(KeyCode.A))
         {
+            animator.SetBool("Running", true);
             moveDirection = -1f;
         }
         else if (Input.GetKey(KeyCode.D))
         {
             moveDirection = 1f;
+            animator.SetBool("Running", true);
+        }
+        else
+        {
+            animator.SetBool("Running", false);
         }
 
         Vector3 movement = transform.right * moveDirection * MoveSpeed;
-        Vector3 velocity = rb.velocity;
+        Vector3 velocity = rb.linearVelocity;
         velocity.x = movement.x;
         velocity.z = 0; // Locked Z axis
-        rb.velocity = velocity;
+        rb.linearVelocity = velocity;
 
         if (isGrounded && moveDirection == 0)
         {
-            rb.velocity = new Vector3(0, rb.velocity.y, 0);
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
         }
     }
 
@@ -86,20 +94,22 @@ public class Player : MonoBehaviour
         isGrounded = false;
         groundCheckTimer = groundCheckDelay;
 
-        Vector3 jumpVelocity = rb.velocity;
+        animator.SetTrigger("Jump");
+
+        Vector3 jumpVelocity = rb.linearVelocity;
         jumpVelocity.y = jumpForce;
-        rb.velocity = jumpVelocity;
+        rb.linearVelocity = jumpVelocity;
     }
 
     void ApplyJumpPhysics()
     {
-        if (rb.velocity.y < 0)
+        if (rb.linearVelocity.y < 0)
         {
-            rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
         }
-        else if (rb.velocity.y > 0)
+        else if (rb.linearVelocity.y > 0)
         {
-            rb.velocity += Vector3.up * Physics.gravity.y * (ascendMultiplier - 1) * Time.fixedDeltaTime;
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (ascendMultiplier - 1) * Time.fixedDeltaTime;
         }
     }
 
