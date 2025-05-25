@@ -8,9 +8,19 @@ public class AN_Button : MonoBehaviour
     private Animator anim;
     public bool playerNear = false; // Track if player is near the button
 
+    [Header("Audio")]
+    public AudioClip pressSound;          // Sound to play when button is pressed
+    private AudioSource audioSource;      // Audio source component
+
     void Start()
     {
         anim = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
+
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>(); // Add one if not present
+        }
     }
 
     void Update()
@@ -20,7 +30,7 @@ public class AN_Button : MonoBehaviour
         {
             Debug.Log("E Button Pressed!"); // Check if button press is detected
 
-            // Play button animation when E is pressed
+            // Play button animation
             if (isLever)
             {
                 anim.SetBool("LeverUp", !anim.GetBool("LeverUp"));
@@ -30,10 +40,16 @@ public class AN_Button : MonoBehaviour
                 anim.SetTrigger("ButtonPress");
             }
 
+            // Play sound
+            if (pressSound != null)
+            {
+                audioSource.PlayOneShot(pressSound);
+            }
+
             // Trigger the door opening if it's not already open
             if (!DoorObject.isOpened)
             {
-                DoorObject.OpenDoor();  // Open the door
+                DoorObject.OpenDoor();
             }
         }
     }
@@ -43,7 +59,7 @@ public class AN_Button : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerNear = true;
-            Debug.Log("Player Entered Button Trigger Area"); // Player near button
+            Debug.Log("Player Entered Button Trigger Area");
         }
     }
 
@@ -52,7 +68,7 @@ public class AN_Button : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerNear = false;
-            Debug.Log("Player Left Button Trigger Area"); // Player leaves button trigger
+            Debug.Log("Player Left Button Trigger Area");
         }
     }
 
@@ -60,7 +76,7 @@ public class AN_Button : MonoBehaviour
     {
         if (DoorObject != null)
         {
-            DoorObject.OpenDoor(); // Open the door
+            DoorObject.OpenDoor();
         }
     }
 }
