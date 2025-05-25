@@ -2,12 +2,9 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-
     // Ground Movement
     private Rigidbody rb;
     public float MoveSpeed = 5f;
-    private float moveHorizontal;
-    private float moveForward;
 
     // Jumping
     public float jumpForce = 10f;
@@ -16,9 +13,12 @@ public class Player : MonoBehaviour
     private bool isGrounded = true;
     public LayerMask groundLayer;
     private float groundCheckTimer = 0f;
-    private float groundCheckDelay = 0.3f;
+    public float groundCheckDelay = 0.3f;
     private float playerHeight;
     private float raycastDistance;
+
+    // Constant gravity
+    public float extraGravity = 20f;
 
     void Start()
     {
@@ -34,15 +34,11 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        moveHorizontal = Input.GetAxisRaw("Horizontal");
-
-
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             Jump();
         }
 
-        // Updated ground check using SphereCast
         if (groundCheckTimer <= 0f)
         {
             isGrounded = CheckIfGrounded();
@@ -57,57 +53,68 @@ public class Player : MonoBehaviour
     {
         MovePlayer();
         ApplyJumpPhysics();
+        ApplyConstantGravity();
     }
 
     void MovePlayer()
     {
+        float moveDirection = 0f;
 
-        Vector3 movement = transform.right * moveHorizontal;
-        Vector3 targetVelocity = movement * MoveSpeed;
-
-        Vector3 velocity = rb.linearVelocity; // Using linearVelocity per new physics system
-        velocity.x = targetVelocity.x;
-
-        // Prevent movement in forward/backward (Z) and don't affect vertical motion (Y)
-        velocity.z = 0; // lock forward/back movement
-        rb.linearVelocity = velocity;
-
-        if (isGrounded && moveHorizontal == 0)
+        if (Input.GetKey(KeyCode.A))
         {
-            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+            moveDirection = -1f;
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            moveDirection = 1f;
+        }
+
+        Vector3 movement = transform.right * moveDirection * MoveSpeed;
+        Vector3 velocity = rb.velocity;
+        velocity.x = movement.x;
+        velocity.z = 0; // Locked Z axis
+        rb.velocity = velocity;
+
+        if (isGrounded && moveDirection == 0)
+        {
+            rb.velocity = new Vector3(0, rb.velocity.y, 0);
         }
     }
-
 
     void Jump()
     {
         isGrounded = false;
         groundCheckTimer = groundCheckDelay;
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
+
+        Vector3 jumpVelocity = rb.velocity;
+        jumpVelocity.y = jumpForce;
+        rb.velocity = jumpVelocity;
     }
 
     void ApplyJumpPhysics()
     {
-        if (rb.linearVelocity.y < 0)
+        if (rb.velocity.y < 0)
         {
-            rb.linearVelocity += Vector3.up * Physics.gravity.y * fallMultiplier * Time.fixedDeltaTime;
+            rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
         }
-        else if (rb.linearVelocity.y > 0)
+        else if (rb.velocity.y > 0)
         {
-            rb.linearVelocity += Vector3.up * Physics.gravity.y * ascendMultiplier * Time.fixedDeltaTime;
+            rb.velocity += Vector3.up * Physics.gravity.y * (ascendMultiplier - 1) * Time.fixedDeltaTime;
         }
+    }
+
+    void ApplyConstantGravity()
+    {
+        rb.AddForce(Vector3.down * extraGravity, ForceMode.Acceleration);
     }
 
     bool CheckIfGrounded()
     {
         Vector3 rayOrigin = transform.position + Vector3.up * 0.1f;
-
-        // Debug ray for testing
         Debug.DrawRay(rayOrigin, Vector3.down * raycastDistance, Color.red);
 
         if (Physics.SphereCast(rayOrigin, 0.3f, Vector3.down, out RaycastHit hit, raycastDistance, groundLayer))
         {
-            // Check that the surface is mostly flat
             return Vector3.Angle(hit.normal, Vector3.up) < 45f;
         }
 
