@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public class DimensionShift : MonoBehaviour
 {
-    public string firstTag = "Dimension1";  // Tag for first dimension
-    public string secondTag = "Dimension2"; // Tag for second dimension
+    public string firstLayerName = "Dimension1";   // Layer name for first dimension
+    public string secondLayerName = "Dimension2";  // Layer name for second dimension
 
     private List<GameObject> firstObjects = new List<GameObject>();
     private List<GameObject> secondObjects = new List<GameObject>();
@@ -14,13 +14,21 @@ public class DimensionShift : MonoBehaviour
 
     void Start()
     {
-        // Populate lists even if objects are inactive
-        firstObjects.AddRange(FindObjectsByTagIncludingInactive(firstTag));
-        secondObjects.AddRange(FindObjectsByTagIncludingInactive(secondTag));
+        int firstLayer = LayerMask.NameToLayer(firstLayerName);
+        int secondLayer = LayerMask.NameToLayer(secondLayerName);
+
+        if (firstLayer == -1 || secondLayer == -1)
+        {
+            Debug.LogError("[DimensionShift] One or both layer names are invalid.");
+            return;
+        }
+
+        firstObjects.AddRange(FindObjectsInLayerIncludingInactive(firstLayer));
+        secondObjects.AddRange(FindObjectsInLayerIncludingInactive(secondLayer));
 
         // Initial state
         SetObjectsActive(firstObjects, true);
-        SetObjectsActive(secondObjects, false); 
+        SetObjectsActive(secondObjects, false);
     }
 
     void Update()
@@ -40,6 +48,7 @@ public class DimensionShift : MonoBehaviour
             Debug.Log("[DimensionShift] Shift BLOCKED!");
         }
     }
+
     public void DisableShift(float duration)
     {
         isBlocked = true;
@@ -64,19 +73,20 @@ public class DimensionShift : MonoBehaviour
         }
     }
 
-    // Custom method to find inactive objects too
-    GameObject[] FindObjectsByTagIncludingInactive(string tag)
+    // Finds objects even if they are inactive, and filters them by layer
+    GameObject[] FindObjectsInLayerIncludingInactive(int layer)
     {
         GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
-        List<GameObject> taggedObjects = new List<GameObject>();
+        List<GameObject> layerObjects = new List<GameObject>();
 
         foreach (GameObject obj in allObjects)
         {
-            if (obj.CompareTag(tag) && obj.hideFlags == HideFlags.None)
+            if (obj.layer == layer && obj.hideFlags == HideFlags.None)
             {
-                taggedObjects.Add(obj);
+                layerObjects.Add(obj);
             }
         }
-        return taggedObjects.ToArray();
+
+        return layerObjects.ToArray();
     }
 }
