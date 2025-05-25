@@ -7,16 +7,12 @@ public class Levels : MonoBehaviour
 {
     public void Level_1()
     {
-        SceneManager.LoadScene("Level_1");
+        SceneManager.LoadScene("Level_Tutorial 1");
     }
 
     public void Level_2()
     {
-        SceneManager.LoadScene("Level_Tutorial 1");
-    }
-    public void Level_3()
-    {
-        SceneManager.LoadScene("test1");
+        SceneManager.LoadScene("Level_1");
     }
 
     public void GoBack()

@@ -7,7 +7,7 @@ public class GameOver : MonoBehaviour
 {
     public void Restart()
     {
-        SceneManager.LoadScene("test1");
+        SceneManager.LoadScene("Level_1");
     }
 
     public void MainMenu()
@@ -17,6 +17,6 @@ public class GameOver : MonoBehaviour
 
     public void NextLevel()
     {
-        SceneManager.LoadScene("test1");
+        SceneManager.LoadScene("Level_Tutorial 1");
     }
 }
