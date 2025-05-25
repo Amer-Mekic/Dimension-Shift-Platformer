@@ -2,34 +2,30 @@ using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
 {
-    private Animator animator;
-    private bool isGrounded = true; // Simple grounded check for jump logic
+    public Animator animator; // Drag PlayerMesh's Animator here
+    public Transform groundCheck;
+    public float groundDistance = 0.2f;
+    public LayerMask groundMask;
 
-    void Start()
-    {
-        animator = GetComponent<Animator>();
-    }
+    private bool isGrounded;
 
     void Update()
     {
-        // Movement detection
+        // Check movement
         bool isMoving = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D);
         animator.SetBool("isRunning", isMoving);
 
-        // Jump detection
+        // Ground check using raycast or overlap sphere
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+
+        // Jump
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             animator.SetBool("isJumping", true);
-            isGrounded = false; // Prevent multiple jumps
         }
-    }
 
-    // Simulate landing (you can replace this with real collision logic)
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (isGrounded)
         {
-            isGrounded = true;
             animator.SetBool("isJumping", false);
         }
     }
