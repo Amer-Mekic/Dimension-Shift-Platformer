@@ -1,0 +1,374 @@
+stash@{0}: WIP on feature-player-movement: 2faa32d Fix and optimize player movement & jumping: switched to rb.velocity, added constant gravity, simplified input logic, locked Z movement, and improved jump physics & ground detection.
+
+ Assets/Animations.meta                             |    13 [32m+[m
+ Assets/Animations/Exit.controller                  |   844 [32m++[m
+ Assets/Animations/Exit.controller.meta             |     8 [32m+[m
+ Assets/Animations/Level.controller                 |   844 [32m++[m
+ Assets/Animations/Level.controller.meta            |     8 [32m+[m
+ Assets/Animations/Main Menu.controller             |   844 [32m++[m
+ Assets/Animations/Main Menu.controller.meta        |     8 [32m+[m
+ Assets/Animations/Pause.controller                 |   702 [32m++[m
+ Assets/Animations/Pause.controller.meta            |     8 [32m+[m
+ Assets/Animations/Play.controller                  |   844 [32m++[m
+ Assets/Animations/Play.controller.meta             |     8 [32m+[m
+ Assets/Animations/Restart.controller               |   844 [32m++[m
+ Assets/Animations/Restart.controller.meta          |     8 [32m+[m
+ Assets/Animations/Skull2Animation.anim             |   140 [32m+[m
+ Assets/Animations/Skull2Animation.anim.meta        |     8 [32m+[m
+ Assets/Animations/SkullAnimation.anim              |   140 [32m+[m
+ Assets/Animations/SkullAnimation.anim.meta         |     8 [32m+[m
+ Assets/Animations/skull 2.controller               |    72 [32m+[m
+ Assets/Animations/skull 2.controller.meta          |     8 [32m+[m
+ Assets/Animations/skull.controller                 |    72 [32m+[m
+ Assets/Animations/skull.controller.meta            |     8 [32m+[m
+ Assets/Fonts.meta                                  |    14 [32m+[m
+ Assets/Fonts/Steelar-j9Vnj SDF.asset               |   298 [32m+[m
+ Assets/Fonts/Steelar-j9Vnj SDF.asset.meta          |     8 [32m+[m
+ Assets/Fonts/Steelar-j9Vnj.otf                     |   Bin [31m0[m -> [32m13084[m bytes
+ Assets/Fonts/Steelar-j9Vnj.otf.meta                |    21 [32m+[m
+ Assets/Fonts/ThaleahFat_TTF SDF.asset              |  2588 [32m++++[m
+ Assets/Fonts/ThaleahFat_TTF SDF.asset.meta         |     8 [32m+[m
+ Assets/Images.meta                                 |     8 [32m+[m
+ Assets/Materials/Red.mat.meta                      |     6 [32m+[m
+ Assets/Prefabs/ButtonPrefab_Menu.prefab            |   294 [32m+[m
+ Assets/Prefabs/ButtonPrefab_Menu.prefab.meta       |     7 [32m+[m
+ Assets/Prefabs/PauseButtonBackground.prefab        |   300 [32m+[m
+ Assets/Prefabs/PauseButtonBackground.prefab.meta   |     7 [32m+[m
+ Assets/Prefabs/PauseCanvas.prefab                  |   508 [32m+[m
+ Assets/Prefabs/PauseCanvas.prefab.meta             |     7 [32m+[m
+ Assets/Prefabs/Spikes.prefab.meta                  |     6 [32m+[m
+ Assets/Scripts/GameOver.cs                         |    22 [32m+[m
+ Assets/Scripts/GameOver.cs.meta                    |     2 [32m+[m
+ Assets/Scripts/MainMenu.cs                         |    21 [32m+[m
+ Assets/Scripts/MainMenu.cs.meta                    |     2 [32m+[m
+ Assets/Scripts/MenuSwitch.cs                       |    16 [32m+[m
+ Assets/Scripts/MenuSwitch.cs.meta                  |     2 [32m+[m
+ Assets/Scripts/PauseMenu.cs                        |    30 [32m+[m
+ Assets/Scripts/PauseMenu.cs.meta                   |     2 [32m+[m
+ Assets/Scripts/PowerObstructor.cs                  |     2 [32m+[m[31m-[m
+ Assets/Scripts/SelectLevel.cs                      |    26 [32m+[m
+ Assets/Scripts/SelectLevel.cs.meta                 |     2 [32m+[m
+ Assets/Scripts/Spikes.cs                           |     2 [32m+[m
+ Assets/Scripts/test1Script.cs                      |    18 [32m+[m
+ Assets/Scripts/test1Script.cs.meta                 |     2 [32m+[m
+ Assets/TextMesh Pro.meta                           |     8 [32m+[m
+ Assets/TextMesh Pro/Fonts.meta                     |     8 [32m+[m
+ Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt |    46 [32m+[m
+ .../Fonts/LiberationSans - OFL.txt.meta            |     8 [32m+[m
+ Assets/TextMesh Pro/Fonts/LiberationSans.ttf       |   Bin [31m0[m -> [32m350200[m bytes
+ Assets/TextMesh Pro/Fonts/LiberationSans.ttf.meta  |    19 [32m+[m
+ Assets/TextMesh Pro/Resources.meta                 |     8 [32m+[m
+ .../TextMesh Pro/Resources/Fonts & Materials.meta  |     9 [32m+[m
+ .../LiberationSans SDF - Drop Shadow.mat           |   106 [32m+[m
+ .../LiberationSans SDF - Drop Shadow.mat.meta      |     8 [32m+[m
+ .../LiberationSans SDF - Fallback.asset            |   347 [32m+[m
+ .../LiberationSans SDF - Fallback.asset.meta       |     8 [32m+[m
+ .../LiberationSans SDF - Outline.mat               |   104 [32m+[m
+ .../LiberationSans SDF - Outline.mat.meta          |     8 [32m+[m
+ .../Fonts & Materials/LiberationSans SDF.asset     |  7821 [32m++++++++++++[m
+ .../LiberationSans SDF.asset.meta                  |     8 [32m+[m
+ .../LineBreaking Following Characters.txt          |     1 [32m+[m
+ .../LineBreaking Following Characters.txt.meta     |     8 [32m+[m
+ .../Resources/LineBreaking Leading Characters.txt  |     1 [32m+[m
+ .../LineBreaking Leading Characters.txt.meta       |     8 [32m+[m
+ Assets/TextMesh Pro/Resources/Style Sheets.meta    |     9 [32m+[m
+ .../Style Sheets/Default Style Sheet.asset         |    81 [32m+[m
+ .../Style Sheets/Default Style Sheet.asset.meta    |     8 [32m+[m
+ .../Resources/Style Sheets/Sprite Assets.meta      |     9 [32m+[m
+ .../Style Sheets/Sprite Assets/EmojiOne.asset      |   659 [32m+[m
+ .../Style Sheets/Sprite Assets/EmojiOne.asset.meta |     8 [32m+[m
+ Assets/TextMesh Pro/Resources/TMP Settings.asset   |    52 [32m+[m
+ .../TextMesh Pro/Resources/TMP Settings.asset.meta |     8 [32m+[m
+ Assets/TextMesh Pro/Shaders.meta                   |     8 [32m+[m
+ Assets/TextMesh Pro/Shaders/SDFFunctions.hlsl      |   178 [32m+[m
+ Assets/TextMesh Pro/Shaders/SDFFunctions.hlsl.meta |    10 [32m+[m
+ .../Shaders/TMP_Bitmap-Custom-Atlas.shader         |   145 [32m+[m
+ .../Shaders/TMP_Bitmap-Custom-Atlas.shader.meta    |     9 [32m+[m
+ .../TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader  |   155 [32m+[m
+ .../Shaders/TMP_Bitmap-Mobile.shader.meta          |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader      |   145 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader.meta |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader |   326 [32m+[m
+ .../Shaders/TMP_SDF Overlay.shader.meta            |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader     |   321 [32m+[m
+ .../TextMesh Pro/Shaders/TMP_SDF SSD.shader.meta   |     9 [32m+[m
+ .../Shaders/TMP_SDF-HDRP LIT.shadergraph           | 12074 [32m+++++++++++++++++++[m
+ .../Shaders/TMP_SDF-HDRP LIT.shadergraph.meta      |    10 [32m+[m
+ .../Shaders/TMP_SDF-HDRP UNLIT.shadergraph         | 11759 [32m++++++++++++++++++[m
+ .../Shaders/TMP_SDF-HDRP UNLIT.shadergraph.meta    |    10 [32m+[m
+ .../Shaders/TMP_SDF-Mobile Masking.shader          |   258 [32m+[m
+ .../Shaders/TMP_SDF-Mobile Masking.shader.meta     |     9 [32m+[m
+ .../Shaders/TMP_SDF-Mobile Overlay.shader          |   252 [32m+[m
+ .../Shaders/TMP_SDF-Mobile Overlay.shader.meta     |     9 [32m+[m
+ .../TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader |   106 [32m+[m
+ .../Shaders/TMP_SDF-Mobile SSD.shader.meta         |     9 [32m+[m
+ .../Shaders/TMP_SDF-Mobile-2-Pass.shader           |   389 [32m+[m
+ .../Shaders/TMP_SDF-Mobile-2-Pass.shader.meta      |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader  |   250 [32m+[m
+ .../Shaders/TMP_SDF-Mobile.shader.meta             |     9 [32m+[m
+ .../Shaders/TMP_SDF-Surface-Mobile.shader          |   139 [32m+[m
+ .../Shaders/TMP_SDF-Surface-Mobile.shader.meta     |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader |   159 [32m+[m
+ .../Shaders/TMP_SDF-Surface.shader.meta            |     9 [32m+[m
+ .../Shaders/TMP_SDF-URP Lit.shadergraph            | 11932 [32m++++++++++++++++++[m
+ .../Shaders/TMP_SDF-URP Lit.shadergraph.meta       |    10 [32m+[m
+ .../Shaders/TMP_SDF-URP Unlit.shadergraph          | 11629 [32m++++++++++++++++++[m
+ .../Shaders/TMP_SDF-URP Unlit.shadergraph.meta     |    10 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_SDF.shader         |   326 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_SDF.shader.meta    |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_Sprite.shader      |   131 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_Sprite.shader.meta |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMPro.cginc            |    84 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMPro.cginc.meta       |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc     |   165 [32m+[m
+ .../TextMesh Pro/Shaders/TMPro_Mobile.cginc.meta   |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc |    80 [32m+[m
+ .../Shaders/TMPro_Properties.cginc.meta            |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc    |    99 [32m+[m
+ .../TextMesh Pro/Shaders/TMPro_Surface.cginc.meta  |     9 [32m+[m
+ Assets/TextMesh Pro/Sprites.meta                   |     8 [32m+[m
+ .../TextMesh Pro/Sprites/EmojiOne Attribution.txt  |     3 [32m+[m
+ .../Sprites/EmojiOne Attribution.txt.meta          |     7 [32m+[m
+ Assets/TextMesh Pro/Sprites/EmojiOne.json          |   156 [32m+[m
+ Assets/TextMesh Pro/Sprites/EmojiOne.json.meta     |     8 [32m+[m
+ Assets/TextMesh Pro/Sprites/EmojiOne.png           |   Bin [31m0[m -> [32m112319[m bytes
+ Assets/TextMesh Pro/Sprites/EmojiOne.png.meta      |   431 [32m+[m
+ Assets/UI/Backgrounds.meta                         |     8 [32m+[m
+ Assets/UI/Backgrounds/Background 2.png             |   Bin [31m0[m -> [32m50862289[m bytes
+ Assets/UI/Backgrounds/Background 2.png.meta        |   117 [32m+[m
+ Assets/UI/Backgrounds/LargeSquare.png              |   Bin [31m0[m -> [32m17690[m bytes
+ Assets/UI/Backgrounds/LargeSquare.png.meta         |    95 [32m+[m
+ .../UI/Backgrounds/demo01_PixelSky_1920x1080.png   |   Bin [31m0[m -> [32m53629[m bytes
+ .../Backgrounds/demo01_PixelSky_1920x1080.png.meta |   141 [32m+[m
+ Assets/UI/Border.png                               |   Bin [31m0[m -> [32m210[m bytes
+ Assets/UI/Border.png.meta                          |   134 [32m+[m
+ Assets/UI/Scenes.meta                              |     8 [32m+[m
+ Assets/UI/Scenes/GameOver.unity                    |  1639 [32m+++[m
+ Assets/UI/Scenes/GameOver.unity.meta               |     7 [32m+[m
+ Assets/UI/Scenes/LevelCompleted.unity              |  1342 [32m+++[m
+ Assets/UI/Scenes/LevelCompleted.unity.meta         |     7 [32m+[m
+ Assets/UI/Scenes/MainMenu.meta                     |     8 [32m+[m
+ Assets/UI/Scenes/MainMenu.unity                    |  3571 [32m++++++[m
+ Assets/UI/Scenes/MainMenu.unity.meta               |     7 [32m+[m
+ Assets/UI/Scenes/MainMenu/LightingData.asset       |   Bin [31m0[m -> [32m18801[m bytes
+ Assets/UI/Scenes/MainMenu/LightingData.asset.meta  |     8 [32m+[m
+ Assets/UI/Scenes/MainMenu/ReflectionProbe-0.exr    |   Bin [31m0[m -> [32m163864[m bytes
+ .../UI/Scenes/MainMenu/ReflectionProbe-0.exr.meta  |   117 [32m+[m
+ Assets/UI/Scenes/PauseMenu(demo).unity             |   601 [32m+[m
+ Assets/UI/Scenes/PauseMenu(demo).unity.meta        |     7 [32m+[m
+ Assets/UI/Scenes/SelectLevel.unity                 |  1964 [32m+++[m
+ Assets/UI/Scenes/SelectLevel.unity.meta            |     7 [32m+[m
+ Assets/UI/Scenes/test1.unity                       |  1493 [32m+++[m
+ Assets/UI/Scenes/test1.unity.meta                  |     7 [32m+[m
+ Assets/UI/Skull.png                                |   Bin [31m0[m -> [32m2797[m bytes
+ Assets/UI/Skull.png.meta                           |    95 [32m+[m
+ Assets/UI/button2_rounded_HCC.png                  |   Bin [31m0[m -> [32m270[m bytes
+ Assets/UI/button2_rounded_HCC.png.meta             |   134 [32m+[m
+ Assets/UI/button_1.png                             |   Bin [31m0[m -> [32m177[m bytes
+ Assets/UI/button_1.png.meta                        |   134 [32m+[m
+ Assets/UI/button_2.png                             |   Bin [31m0[m -> [32m228[m bytes
+ Assets/UI/button_2.png.meta                        |   134 [32m+[m
+ Assets/UI/button_3.png                             |   Bin [31m0[m -> [32m231[m bytes
+ Assets/UI/button_3.png.meta                        |   134 [32m+[m
+ Assets/UI/filled_horizontal.png                    |   Bin [31m0[m -> [32m108[m bytes
+ Assets/UI/filled_horizontal.png.meta               |   134 [32m+[m
+ Assets/UI/icons_color_customizible.png             |   Bin [31m0[m -> [32m4182[m bytes
+ Assets/UI/icons_color_customizible.png.meta        |  1060 [32m++[m
+ Assets/UI/isons_black.png                          |   Bin [31m0[m -> [32m4194[m bytes
+ Assets/UI/isons_black.png.meta                     |  1060 [32m++[m
+ Assets/UI/off.png                                  |   Bin [31m0[m -> [32m123[m bytes
+ Assets/UI/off.png.meta                             |   134 [32m+[m
+ Assets/UI/on 1.png                                 |   Bin [31m0[m -> [32m144[m bytes
+ Assets/UI/on 1.png.meta                            |   134 [32m+[m
+ Assets/Used Images.meta                            |     8 [32m+[m
+ Packages/manifest.json                             |     1 [32m+[m
+ Packages/packages-lock.json                        |     6 [32m+[m
+ ProjectSettings/EditorBuildSettings.asset          |    20 [32m+[m[31m-[m
+ 184 files changed, 85445 insertions(+), 2 deletions(-)
+stash@{1}: WIP on feature-player-movement: 2faa32d Fix and optimize player movement & jumping: switched to rb.velocity, added constant gravity, simplified input logic, locked Z movement, and improved jump physics & ground detection.
+
+ Assets/Animations.meta                             |    13 [32m+[m
+ Assets/Animations/Exit.controller                  |   844 [32m++[m
+ Assets/Animations/Exit.controller.meta             |     8 [32m+[m
+ Assets/Animations/Level.controller                 |   844 [32m++[m
+ Assets/Animations/Level.controller.meta            |     8 [32m+[m
+ Assets/Animations/Main Menu.controller             |   844 [32m++[m
+ Assets/Animations/Main Menu.controller.meta        |     8 [32m+[m
+ Assets/Animations/Pause.controller                 |   702 [32m++[m
+ Assets/Animations/Pause.controller.meta            |     8 [32m+[m
+ Assets/Animations/Play.controller                  |   844 [32m++[m
+ Assets/Animations/Play.controller.meta             |     8 [32m+[m
+ Assets/Animations/Restart.controller               |   844 [32m++[m
+ Assets/Animations/Restart.controller.meta          |     8 [32m+[m
+ Assets/Animations/Skull2Animation.anim             |   140 [32m+[m
+ Assets/Animations/Skull2Animation.anim.meta        |     8 [32m+[m
+ Assets/Animations/SkullAnimation.anim              |   140 [32m+[m
+ Assets/Animations/SkullAnimation.anim.meta         |     8 [32m+[m
+ Assets/Animations/skull 2.controller               |    72 [32m+[m
+ Assets/Animations/skull 2.controller.meta          |     8 [32m+[m
+ Assets/Animations/skull.controller                 |    72 [32m+[m
+ Assets/Animations/skull.controller.meta            |     8 [32m+[m
+ Assets/Fonts.meta                                  |    14 [32m+[m
+ Assets/Fonts/Steelar-j9Vnj SDF.asset               |   298 [32m+[m
+ Assets/Fonts/Steelar-j9Vnj SDF.asset.meta          |     8 [32m+[m
+ Assets/Fonts/Steelar-j9Vnj.otf                     |   Bin [31m0[m -> [32m13084[m bytes
+ Assets/Fonts/Steelar-j9Vnj.otf.meta                |    21 [32m+[m
+ Assets/Fonts/ThaleahFat_TTF SDF.asset              |  2588 [32m++++[m
+ Assets/Fonts/ThaleahFat_TTF SDF.asset.meta         |     8 [32m+[m
+ Assets/Images.meta                                 |     8 [32m+[m
+ Assets/Materials/Red.mat.meta                      |     6 [32m+[m
+ Assets/Prefabs/ButtonPrefab_Menu.prefab            |   294 [32m+[m
+ Assets/Prefabs/ButtonPrefab_Menu.prefab.meta       |     7 [32m+[m
+ Assets/Prefabs/PauseButtonBackground.prefab        |   300 [32m+[m
+ Assets/Prefabs/PauseButtonBackground.prefab.meta   |     7 [32m+[m
+ Assets/Prefabs/PauseCanvas.prefab                  |   508 [32m+[m
+ Assets/Prefabs/PauseCanvas.prefab.meta             |     7 [32m+[m
+ Assets/Prefabs/Spikes.prefab.meta                  |     6 [32m+[m
+ Assets/Scripts/GameOver.cs                         |    22 [32m+[m
+ Assets/Scripts/GameOver.cs.meta                    |     2 [32m+[m
+ Assets/Scripts/MainMenu.cs                         |    21 [32m+[m
+ Assets/Scripts/MainMenu.cs.meta                    |     2 [32m+[m
+ Assets/Scripts/MenuSwitch.cs                       |    16 [32m+[m
+ Assets/Scripts/MenuSwitch.cs.meta                  |     2 [32m+[m
+ Assets/Scripts/PauseMenu.cs                        |    30 [32m+[m
+ Assets/Scripts/PauseMenu.cs.meta                   |     2 [32m+[m
+ Assets/Scripts/PowerObstructor.cs                  |     2 [32m+[m[31m-[m
+ Assets/Scripts/SelectLevel.cs                      |    26 [32m+[m
+ Assets/Scripts/SelectLevel.cs.meta                 |     2 [32m+[m
+ Assets/Scripts/Spikes.cs                           |     2 [32m+[m
+ Assets/Scripts/test1Script.cs                      |    18 [32m+[m
+ Assets/Scripts/test1Script.cs.meta                 |     2 [32m+[m
+ Assets/TextMesh Pro.meta                           |     8 [32m+[m
+ Assets/TextMesh Pro/Fonts.meta                     |     8 [32m+[m
+ Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt |    46 [32m+[m
+ .../Fonts/LiberationSans - OFL.txt.meta            |     8 [32m+[m
+ Assets/TextMesh Pro/Fonts/LiberationSans.ttf       |   Bin [31m0[m -> [32m350200[m bytes
+ Assets/TextMesh Pro/Fonts/LiberationSans.ttf.meta  |    19 [32m+[m
+ Assets/TextMesh Pro/Resources.meta                 |     8 [32m+[m
+ .../TextMesh Pro/Resources/Fonts & Materials.meta  |     9 [32m+[m
+ .../LiberationSans SDF - Drop Shadow.mat           |   106 [32m+[m
+ .../LiberationSans SDF - Drop Shadow.mat.meta      |     8 [32m+[m
+ .../LiberationSans SDF - Fallback.asset            |   347 [32m+[m
+ .../LiberationSans SDF - Fallback.asset.meta       |     8 [32m+[m
+ .../LiberationSans SDF - Outline.mat               |   104 [32m+[m
+ .../LiberationSans SDF - Outline.mat.meta          |     8 [32m+[m
+ .../Fonts & Materials/LiberationSans SDF.asset     |  7821 [32m++++++++++++[m
+ .../LiberationSans SDF.asset.meta                  |     8 [32m+[m
+ .../LineBreaking Following Characters.txt          |     1 [32m+[m
+ .../LineBreaking Following Characters.txt.meta     |     8 [32m+[m
+ .../Resources/LineBreaking Leading Characters.txt  |     1 [32m+[m
+ .../LineBreaking Leading Characters.txt.meta       |     8 [32m+[m
+ Assets/TextMesh Pro/Resources/Style Sheets.meta    |     9 [32m+[m
+ .../Style Sheets/Default Style Sheet.asset         |    81 [32m+[m
+ .../Style Sheets/Default Style Sheet.asset.meta    |     8 [32m+[m
+ .../Resources/Style Sheets/Sprite Assets.meta      |     9 [32m+[m
+ .../Style Sheets/Sprite Assets/EmojiOne.asset      |   659 [32m+[m
+ .../Style Sheets/Sprite Assets/EmojiOne.asset.meta |     8 [32m+[m
+ Assets/TextMesh Pro/Resources/TMP Settings.asset   |    52 [32m+[m
+ .../TextMesh Pro/Resources/TMP Settings.asset.meta |     8 [32m+[m
+ Assets/TextMesh Pro/Shaders.meta                   |     8 [32m+[m
+ Assets/TextMesh Pro/Shaders/SDFFunctions.hlsl      |   178 [32m+[m
+ Assets/TextMesh Pro/Shaders/SDFFunctions.hlsl.meta |    10 [32m+[m
+ .../Shaders/TMP_Bitmap-Custom-Atlas.shader         |   145 [32m+[m
+ .../Shaders/TMP_Bitmap-Custom-Atlas.shader.meta    |     9 [32m+[m
+ .../TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader  |   155 [32m+[m
+ .../Shaders/TMP_Bitmap-Mobile.shader.meta          |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader      |   145 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader.meta |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader |   326 [32m+[m
+ .../Shaders/TMP_SDF Overlay.shader.meta            |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader     |   321 [32m+[m
+ .../TextMesh Pro/Shaders/TMP_SDF SSD.shader.meta   |     9 [32m+[m
+ .../Shaders/TMP_SDF-HDRP LIT.shadergraph           | 12074 [32m+++++++++++++++++++[m
+ .../Shaders/TMP_SDF-HDRP LIT.shadergraph.meta      |    10 [32m+[m
+ .../Shaders/TMP_SDF-HDRP UNLIT.shadergraph         | 11759 [32m++++++++++++++++++[m
+ .../Shaders/TMP_SDF-HDRP UNLIT.shadergraph.meta    |    10 [32m+[m
+ .../Shaders/TMP_SDF-Mobile Masking.shader          |   258 [32m+[m
+ .../Shaders/TMP_SDF-Mobile Masking.shader.meta     |     9 [32m+[m
+ .../Shaders/TMP_SDF-Mobile Overlay.shader          |   252 [32m+[m
+ .../Shaders/TMP_SDF-Mobile Overlay.shader.meta     |     9 [32m+[m
+ .../TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader |   106 [32m+[m
+ .../Shaders/TMP_SDF-Mobile SSD.shader.meta         |     9 [32m+[m
+ .../Shaders/TMP_SDF-Mobile-2-Pass.shader           |   389 [32m+[m
+ .../Shaders/TMP_SDF-Mobile-2-Pass.shader.meta      |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader  |   250 [32m+[m
+ .../Shaders/TMP_SDF-Mobile.shader.meta             |     9 [32m+[m
+ .../Shaders/TMP_SDF-Surface-Mobile.shader          |   139 [32m+[m
+ .../Shaders/TMP_SDF-Surface-Mobile.shader.meta     |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader |   159 [32m+[m
+ .../Shaders/TMP_SDF-Surface.shader.meta            |     9 [32m+[m
+ .../Shaders/TMP_SDF-URP Lit.shadergraph            | 11932 [32m++++++++++++++++++[m
+ .../Shaders/TMP_SDF-URP Lit.shadergraph.meta       |    10 [32m+[m
+ .../Shaders/TMP_SDF-URP Unlit.shadergraph          | 11629 [32m++++++++++++++++++[m
+ .../Shaders/TMP_SDF-URP Unlit.shadergraph.meta     |    10 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_SDF.shader         |   326 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_SDF.shader.meta    |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_Sprite.shader      |   131 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMP_Sprite.shader.meta |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMPro.cginc            |    84 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMPro.cginc.meta       |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc     |   165 [32m+[m
+ .../TextMesh Pro/Shaders/TMPro_Mobile.cginc.meta   |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc |    80 [32m+[m
+ .../Shaders/TMPro_Properties.cginc.meta            |     9 [32m+[m
+ Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc    |    99 [32m+[m
+ .../TextMesh Pro/Shaders/TMPro_Surface.cginc.meta  |     9 [32m+[m
+ Assets/TextMesh Pro/Sprites.meta                   |     8 [32m+[m
+ .../TextMesh Pro/Sprites/EmojiOne Attribution.txt  |     3 [32m+[m
+ .../Sprites/EmojiOne Attribution.txt.meta          |     7 [32m+[m
+ Assets/TextMesh Pro/Sprites/EmojiOne.json          |   156 [32m+[m
+ Assets/TextMesh Pro/Sprites/EmojiOne.json.meta     |     8 [32m+[m
+ Assets/TextMesh Pro/Sprites/EmojiOne.png           |   Bin [31m0[m -> [32m112319[m bytes
+ Assets/TextMesh Pro/Sprites/EmojiOne.png.meta      |   431 [32m+[m
+ Assets/UI/Backgrounds.meta                         |     8 [32m+[m
+ Assets/UI/Backgrounds/Background 2.png             |   Bin [31m0[m -> [32m50862289[m bytes
+ Assets/UI/Backgrounds/Background 2.png.meta        |   117 [32m+[m
+ Assets/UI/Backgrounds/LargeSquare.png              |   Bin [31m0[m -> [32m17690[m bytes
+ Assets/UI/Backgrounds/LargeSquare.png.meta         |    95 [32m+[m
+ .../UI/Backgrounds/demo01_PixelSky_1920x1080.png   |   Bin [31m0[m -> [32m53629[m bytes
+ .../Backgrounds/demo01_PixelSky_1920x1080.png.meta |   141 [32m+[m
+ Assets/UI/Border.png                               |   Bin [31m0[m -> [32m210[m bytes
+ Assets/UI/Border.png.meta                          |   134 [32m+[m
+ Assets/UI/Scenes.meta                              |     8 [32m+[m
+ Assets/UI/Scenes/GameOver.unity                    |  1639 [32m+++[m
+ Assets/UI/Scenes/GameOver.unity.meta               |     7 [32m+[m
+ Assets/UI/Scenes/LevelCompleted.unity              |  1342 [32m+++[m
+ Assets/UI/Scenes/LevelCompleted.unity.meta         |     7 [32m+[m
+ Assets/UI/Scenes/MainMenu.meta                     |     8 [32m+[m
+ Assets/UI/Scenes/MainMenu.unity                    |  3571 [32m++++++[m
+ Assets/UI/Scenes/MainMenu.unity.meta               |     7 [32m+[m
+ Assets/UI/Scenes/MainMenu/LightingData.asset       |   Bin [31m0[m -> [32m18801[m bytes
+ Assets/UI/Scenes/MainMenu/LightingData.asset.meta  |     8 [32m+[m
+ Assets/UI/Scenes/MainMenu/ReflectionProbe-0.exr    |   Bin [31m0[m -> [32m163864[m bytes
+ .../UI/Scenes/MainMenu/ReflectionProbe-0.exr.meta  |   117 [32m+[m
+ Assets/UI/Scenes/PauseMenu(demo).unity             |   601 [32m+[m
+ Assets/UI/Scenes/PauseMenu(demo).unity.meta        |     7 [32m+[m
+ Assets/UI/Scenes/SelectLevel.unity                 |  1964 [32m+++[m
+ Assets/UI/Scenes/SelectLevel.unity.meta            |     7 [32m+[m
+ Assets/UI/Scenes/test1.unity                       |  1493 [32m+++[m
+ Assets/UI/Scenes/test1.unity.meta                  |     7 [32m+[m
+ Assets/UI/Skull.png                                |   Bin [31m0[m -> [32m2797[m bytes
+ Assets/UI/Skull.png.meta                           |    95 [32m+[m
+ Assets/UI/button2_rounded_HCC.png                  |   Bin [31m0[m -> [32m270[m bytes
+ Assets/UI/button2_rounded_HCC.png.meta             |   134 [32m+[m
+ Assets/UI/button_1.png                             |   Bin [31m0[m -> [32m177[m bytes
+ Assets/UI/button_1.png.meta                        |   134 [32m+[m
+ Assets/UI/button_2.png                             |   Bin [31m0[m -> [32m228[m bytes
+ Assets/UI/button_2.png.meta                        |   134 [32m+[m
+ Assets/UI/button_3.png                             |   Bin [31m0[m -> [32m231[m bytes
+ Assets/UI/button_3.png.meta                        |   134 [32m+[m
+ Assets/UI/filled_horizontal.png                    |   Bin [31m0[m -> [32m108[m bytes
+ Assets/UI/filled_horizontal.png.meta               |   134 [32m+[m
+ Assets/UI/icons_color_customizible.png             |   Bin [31m0[m -> [32m4182[m bytes
+ Assets/UI/icons_color_customizible.png.meta        |  1060 [32m++[m
+ Assets/UI/isons_black.png                          |   Bin [31m0[m -> [32m4194[m bytes
+ Assets/UI/isons_black.png.meta                     |  1060 [32m++[m
+ Assets/UI/off.png                                  |   Bin [31m0[m -> [32m123[m bytes
+ Assets/UI/off.png.meta                             |   134 [32m+[m
+ Assets/UI/on 1.png                                 |   Bin [31m0[m -> [32m144[m bytes
+ Assets/UI/on 1.png.meta                            |   134 [32m+[m
+ Assets/Used Images.meta                            |     8 [32m+[m
+ Packages/manifest.json                             |     1 [32m+[m
+ Packages/packages-lock.json                        |     6 [32m+[m
+ ProjectSettings/EditorBuildSettings.asset          |    20 [32m+[m[31m-[m
+ 184 files changed, 85445 insertions(+), 2 deletions(-)
