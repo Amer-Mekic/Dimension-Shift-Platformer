@@ -10,7 +10,7 @@ public class Menu : MonoBehaviour
         SceneManager.LoadScene("Level_Tutorial 1");
     }
 
-    public void LevelSelect()
+public void LevelSelect()
     {
         SceneManager.LoadScene("SelectLevel");
     }

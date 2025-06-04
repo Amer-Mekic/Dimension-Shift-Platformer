@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameOver : MonoBehaviour
 {
-    public void Restart()
+     public void Restart()
     {
         SceneManager.LoadScene("Level_1");
     }
